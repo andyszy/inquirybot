@@ -1,4 +1,4 @@
-import { X, ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft } from '@phosphor-icons/react'
 
 interface QuestionSidebarProps {
   topic: string
