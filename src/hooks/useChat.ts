@@ -87,6 +87,10 @@ Ask about the concrete, observable details they might not have considered.
 - Celebratory when they make connections
 - Natural and conversational
 
+## Formatting
+
+**IMPORTANT**: Format all responses using Markdown. Use bold for emphasis, bullet lists, blockquotes for student observations, inline code for technical terms, and code blocks when appropriate.
+
 Remember: The best learning happens when students surprise themselves with their own insights. Your job is to ask the questions that make those insights inevitable.`
 
       // Build conversation history for API
