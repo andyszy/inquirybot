@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 
 interface SearchFormProps {
@@ -7,32 +8,60 @@ interface SearchFormProps {
   onSubmit: (e: React.FormEvent) => void
 }
 
+const TOPIC_EXAMPLES = [
+  'ancient Rome',
+  'plane crashes',
+  'pillows',
+  'elephants',
+  'lighthouses',
+  'typewriters',
+  'honey bees',
+  'submarines',
+  'glaciers',
+  'origami',
+  'operas',
+  'mushrooms',
+  'sundials',
+  'calligraphy'
+]
+
 export function SearchForm({ topic, loading, onTopicChange, onSubmit }: SearchFormProps) {
+  const placeholderText = useMemo(() => {
+    const shuffled = [...TOPIC_EXAMPLES].sort(() => Math.random() - 0.5)
+    return `e.g., ${shuffled[0]}, ${shuffled[1]}…`
+  }, [])
+
   return (
     <form onSubmit={onSubmit} className="mb-8">
-      <label htmlFor="topic" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-        What topic would you like to explore?
+      {/* Welcome message */}
+      <div className="mb-6 p-5 bg-parchment-dark/40 dark:bg-ink/20 rounded-lg border-l-4 border-gold/40">
+        <p className="font-body text-base leading-relaxed text-ink dark:text-[#E8DCC8]">
+          Perfect timing. The library’s open, tea’s hot. I've been hoping someone would ask me about something interesting. What have you got?
+        </p>
+      </div>
+
+      <label htmlFor="topic" className="block text-base font-serif font-semibold text-burgundy dark:text-[#C85A6E] mb-4">
+        What should we discuss this evening?
       </label>
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1 group">
           <input
             id="topic"
             type="text"
             value={topic}
             onChange={(e) => onTopicChange(e.target.value)}
-            placeholder="e.g., quantum computing, ancient Rome, climate change..."
-            className="w-full px-5 py-4 border-2 border-gray-200 dark:border-gray-700 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 outline-none transition-all duration-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 group-hover:border-gray-300 dark:group-hover:border-gray-600"
+            placeholder={placeholderText}
+            className="w-full px-6 py-4 border-2 border-gold/40 dark:border-gold/50 rounded-lg focus:ring-4 focus:ring-burgundy/20 focus:border-burgundy dark:focus:border-[#C85A6E] outline-none transition-all duration-300 bg-parchment-dark/50 dark:bg-ink/30 font-body text-ink dark:text-[#E8DCC8] placeholder-ink-light/50 dark:placeholder-[#E8DCC8]/40 shadow-inner"
             disabled={loading}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-cyan-500/0 to-emerald-500/0 group-focus-within:from-blue-500/10 group-focus-within:via-cyan-500/10 group-focus-within:to-emerald-500/10 rounded-2xl pointer-events-none transition-all duration-500" />
         </div>
         <button
           type="submit"
           disabled={loading || !topic.trim()}
-          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-700 hover:to-emerald-700 text-white rounded-2xl font-semibold disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 group"
+          className="px-8 py-4 bg-gradient-to-r from-burgundy to-burgundy-deep hover:from-burgundy-deep hover:to-burgundy text-cream rounded-lg font-serif font-semibold disabled:bg-ink-light/30 dark:disabled:bg-ink-light/20 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border-2 border-gold/30"
         >
           <MagnifyingGlass size={20} weight="bold" className={loading ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'} />
-          <span>{loading ? 'Thinking...' : 'Explore'}</span>
+          <span>{loading ? 'Contemplating…' : 'Explore'}</span>
         </button>
       </div>
     </form>

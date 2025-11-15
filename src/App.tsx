@@ -1,49 +1,58 @@
-import { useState } from 'react'
-import { ClockCounterClockwise } from '@phosphor-icons/react'
-import Anthropic from '@anthropic-ai/sdk'
-import { Header } from './components/Header.tsx'
-import { SearchForm } from './components/SearchForm.tsx'
-import { InquiryList } from './components/InquiryList.tsx'
-import { InquiryHistory } from './components/InquiryHistory.tsx'
-import { LoadingState } from './components/LoadingState.tsx'
-import { ErrorMessage } from './components/ErrorMessage.tsx'
-import { Chat } from './components/Chat.tsx'
-import { QuestionSidebar } from './components/QuestionSidebar.tsx'
-import { useDarkMode } from './hooks/useDarkMode.ts'
-import { useLocalStorage } from './hooks/useLocalStorage.ts'
-import { useChat } from './hooks/useChat.ts'
-import type { Inquiry } from './types/index.ts'
+import { useState } from "react";
+import { ClockCounterClockwise } from "@phosphor-icons/react";
+import Anthropic from "@anthropic-ai/sdk";
+import { Header } from "./components/Header.tsx";
+import { SearchForm } from "./components/SearchForm.tsx";
+import { InquiryList } from "./components/InquiryList.tsx";
+import { InquiryHistory } from "./components/InquiryHistory.tsx";
+import { LoadingState } from "./components/LoadingState.tsx";
+import { ErrorMessage } from "./components/ErrorMessage.tsx";
+import { Chat } from "./components/Chat.tsx";
+import { QuestionSidebar } from "./components/QuestionSidebar.tsx";
+import { useDarkMode } from "./hooks/useDarkMode.ts";
+import { useLocalStorage } from "./hooks/useLocalStorage.ts";
+import { useChat } from "./hooks/useChat.ts";
+import type { Inquiry } from "./types/index.ts";
 
 function App() {
-  const [topic, setTopic] = useState('')
-  const [inquiries, setInquiries] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [darkMode, setDarkMode] = useDarkMode()
-  const [history, setHistory] = useLocalStorage<Inquiry[]>('inquiryHistory', [])
-  const [showHistory, setShowHistory] = useState(false)
-  const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null)
+  const [topic, setTopic] = useState("");
+  const [inquiries, setInquiries] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [darkMode, setDarkMode] = useDarkMode();
+  const [history, setHistory] = useLocalStorage<Inquiry[]>(
+    "inquiryHistory",
+    []
+  );
+  const [showHistory, setShowHistory] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState<string | null>(null);
 
-  const { messages, isLoading: isChatLoading, error: chatError, sendMessage, clearChat } = useChat()
+  const {
+    messages,
+    isLoading: isChatLoading,
+    error: chatError,
+    sendMessage,
+    clearChat,
+  } = useChat();
 
   const generateInquiries = async () => {
-    if (!topic.trim()) return
+    if (!topic.trim()) return;
 
-    setLoading(true)
-    setError(null)
-    setInquiries([])
+    setLoading(true);
+    setError(null);
+    setInquiries([]);
 
     try {
-      const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
+      const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
 
-      if (!apiKey || apiKey === 'your_api_key_here') {
-        throw new Error('Please set your Anthropic API key in the .env file')
+      if (!apiKey || apiKey === "your_api_key_here") {
+        throw new Error("Please set your Anthropic API key in the .env file");
       }
 
       const client = new Anthropic({
         apiKey,
-        dangerouslyAllowBrowser: true
-      })
+        dangerouslyAllowBrowser: true,
+      });
 
       const prompt = `You are an aristocratic tutor
 
@@ -60,31 +69,33 @@ Example answer
 - why don't we have flying cars yet
 - why do we have electric cars but not electric planes
 
-Topic: ${topic}`
+Topic: ${topic}`;
 
       const message = await client.messages.create({
-        model: 'claude-sonnet-4-5',
+        model: "claude-sonnet-4-5",
         max_tokens: 1024,
-        messages: [{
-          role: 'user',
-          content: prompt
-        }]
-      })
+        messages: [
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+      });
 
       // Extract text from response
       const responseText = message.content
-        .filter(block => block.type === 'text')
-        .map(block => 'text' in block ? block.text : '')
-        .join('')
+        .filter((block) => block.type === "text")
+        .map((block) => ("text" in block ? block.text : ""))
+        .join("");
 
       // Parse the response into individual inquiries
       const inquiryList = responseText
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line.startsWith('-'))
-        .map(line => line.substring(1).trim())
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("-"))
+        .map((line) => line.substring(1).trim());
 
-      setInquiries(inquiryList)
+      setInquiries(inquiryList);
 
       // Save to history
       if (inquiryList.length > 0) {
@@ -92,59 +103,69 @@ Topic: ${topic}`
           id: Date.now().toString(),
           topic,
           questions: inquiryList,
-          timestamp: Date.now()
-        }
-        setHistory([newInquiry, ...history].slice(0, 50)) // Keep last 50
+          timestamp: Date.now(),
+        };
+        setHistory([newInquiry, ...history].slice(0, 50)); // Keep last 50
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
-      console.error('Error generating inquiries:', err)
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error generating inquiries:", err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    generateInquiries()
-  }
+    e.preventDefault();
+    generateInquiries();
+  };
 
   const handleSelectInquiry = (inquiry: Inquiry) => {
-    setTopic(inquiry.topic)
-    setInquiries(inquiry.questions)
-    setError(null)
-  }
+    setTopic(inquiry.topic);
+    setInquiries(inquiry.questions);
+    setError(null);
+  };
 
   const handleClearHistory = () => {
-    if (confirm('Are you sure you want to clear all history?')) {
-      setHistory([])
+    if (confirm("Are you sure you want to clear all history?")) {
+      setHistory([]);
     }
-  }
+  };
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode)
-  }
+    setDarkMode(!darkMode);
+  };
 
   const handleQuestionClick = (question: string) => {
-    setSelectedQuestion(question)
-    clearChat()
+    setSelectedQuestion(question);
+    clearChat();
     // Send the question as the first message
-    sendMessage('', question)
-  }
+    sendMessage("", question);
+  };
 
   const handleCloseChatMode = () => {
-    setSelectedQuestion(null)
-    clearChat()
-  }
+    setSelectedQuestion(null);
+    clearChat();
+  };
 
-  const hasResults = inquiries.length > 0 || loading
-  const isInChatMode = selectedQuestion !== null
+  const hasResults = inquiries.length > 0 || loading;
+  const isInChatMode = selectedQuestion !== null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50/30 to-cyan-50 dark:from-gray-900 dark:via-blue-950/50 dark:to-emerald-950/30 transition-colors duration-500">
-      <div className={`${isInChatMode ? 'h-screen flex flex-col' : 'container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl'}`}>
+    <div className="min-h-screen bg-parchment dark:bg-[#2C2416] paper-texture transition-colors duration-500">
+      <div
+        className={`${
+          isInChatMode
+            ? "h-screen flex flex-col"
+            : "container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl"
+        }`}
+      >
         {!isInChatMode && (
-          <Header darkMode={darkMode} onToggleDarkMode={toggleDarkMode} minimized={hasResults} />
+          <Header
+            darkMode={darkMode}
+            onToggleDarkMode={toggleDarkMode}
+            minimized={hasResults}
+          />
         )}
 
         {isInChatMode ? (
@@ -162,28 +183,32 @@ Topic: ${topic}`
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 flex flex-col bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-emerald-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:via-emerald-500/10 dark:to-cyan-500/10 pointer-events-none" />
+            <div className="flex-1 flex flex-col bg-cream/95 dark:bg-ink/20 backdrop-blur-sm relative overflow-hidden border-l-2 border-gold/20">
+              <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-burgundy/5 dark:from-gold/10 dark:to-burgundy/10 pointer-events-none paper-texture" />
 
               {/* Chat Header */}
-              <div className="relative z-10 p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <div className="relative z-10 p-6 border-b-2 border-gold/30 flex items-center justify-between bg-parchment/50 dark:bg-ink/30">
                 <div className="flex items-center gap-4">
                   <button
                     onClick={handleCloseChatMode}
-                    className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    className="md:hidden p-2 rounded hover:bg-gold/20 transition-colors text-burgundy dark:text-[#C85A6E]"
                   >
                     <ClockCounterClockwise size={20} weight="bold" />
                   </button>
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Exploring</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{selectedQuestion}</p>
+                    <h2 className="text-lg font-serif font-bold text-burgundy dark:text-[#C85A6E]">
+                      Exploring
+                    </h2>
+                    <p className="text-sm font-body italic text-ink-light dark:text-[#E8DCC8]/70">
+                      {selectedQuestion}
+                    </p>
                   </div>
                 </div>
                 <button
                   onClick={toggleDarkMode}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="p-2 rounded hover:bg-gold/20 transition-colors text-2xl"
                 >
-                  {darkMode ? '☀️' : '🌙'}
+                  {darkMode ? "☀" : "☾"}
                 </button>
               </div>
 
@@ -205,8 +230,7 @@ Topic: ${topic}`
           </div>
         ) : (
           // Normal Mode Layout
-          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-10 mb-8 border border-gray-200/50 dark:border-gray-700/50 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-emerald-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:via-emerald-500/10 dark:to-cyan-500/10 pointer-events-none" />
+          <div className="bg-cream/95 dark:bg-ink/20 backdrop-blur-sm rounded-lg shadow-2xl shadow-burgundy/10 p-8 sm:p-12 mb-8 border-2 border-gold/20 dark:border-gold/30 relative overflow-hidden">
 
             <div className="relative z-10">
               <SearchForm
@@ -235,12 +259,16 @@ Topic: ${topic}`
         {!isInChatMode && history.length > 0 && (
           <button
             onClick={() => setShowHistory(true)}
-            className="fixed bottom-6 right-6 p-4 bg-gradient-to-br from-blue-600 to-emerald-600 text-white rounded-full shadow-2xl hover:shadow-blue-500/50 hover:scale-110 transition-all duration-300 group z-30"
+            className="fixed bottom-6 right-6 p-4 bg-burgundy text-cream rounded-full shadow-2xl shadow-burgundy/30 hover:bg-burgundy-deep hover:scale-110 transition-all duration-300 group z-30 border-2 border-gold"
             aria-label="View history"
           >
-            <ClockCounterClockwise size={24} weight="bold" className="group-hover:rotate-12 transition-transform duration-300" />
-            <span className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-cyan-500 to-emerald-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg">
-              {history.length > 9 ? '9+' : history.length}
+            <ClockCounterClockwise
+              size={24}
+              weight="bold"
+              className="group-hover:rotate-12 transition-transform duration-300"
+            />
+            <span className="absolute -top-2 -right-2 w-6 h-6 bg-forest text-cream text-xs font-serif font-bold rounded-full flex items-center justify-center shadow-lg border border-gold">
+              {history.length > 9 ? "9+" : history.length}
             </span>
           </button>
         )}
@@ -254,13 +282,13 @@ Topic: ${topic}`
         />
 
         {!isInChatMode && (
-          <footer className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
-            <p>Powered by Claude 3.5 Sonnet</p>
+          <footer className="text-center text-sm text-ink-light/60 dark:text-[#E8DCC8]/50 mt-8 font-decorative italic">
+            <div className="ornament">Powered by Claude 3.5 Sonnet</div>
           </footer>
         )}
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

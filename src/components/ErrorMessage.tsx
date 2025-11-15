@@ -6,11 +6,11 @@ interface ErrorMessageProps {
 
 export function ErrorMessage({ message }: ErrorMessageProps) {
   return (
-    <div className="p-5 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-2xl flex items-start gap-4 animate-shake">
-      <Warning size={24} weight="fill" className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+    <div className="p-6 bg-burgundy/10 dark:bg-burgundy/20 border-2 border-burgundy/30 dark:border-burgundy/40 rounded-lg flex items-start gap-4 animate-shake mb-6">
+      <Warning size={24} weight="fill" className="text-burgundy dark:text-[#C85A6E] flex-shrink-0 mt-1" />
       <div>
-        <h3 className="font-semibold text-red-900 dark:text-red-200 mb-1">Oops! Something went wrong</h3>
-        <p className="text-red-700 dark:text-red-300">{message}</p>
+        <h3 className="font-serif font-bold text-burgundy dark:text-[#C85A6E] mb-2">A Minor Setback</h3>
+        <p className="font-body text-ink dark:text-[#E8DCC8]/90 leading-relaxed">{message}</p>
       </div>
     </div>
   )

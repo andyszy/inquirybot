@@ -6,28 +6,35 @@ interface InquiryListProps {
 
 export function InquiryList({ topic, inquiries, onQuestionClick }: InquiryListProps) {
   return (
-    <div className="space-y-4 animate-fade-in">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Intriguing Inquiries about "{topic}"
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-decorative italic text-burgundy dark:text-[#C85A6E]">
+          Inquiries on{' '}
+          <span className="font-bold not-italic">{topic}</span>
         </h2>
-        <span className="px-4 py-2 bg-gradient-to-r from-blue-100 to-emerald-100 dark:from-blue-900/30 dark:to-emerald-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-semibold">
-          {inquiries.length} questions
+        <span className="px-4 py-2 bg-gradient-to-r from-gold/20 to-forest/20 dark:from-gold/30 dark:to-forest/30 text-ink dark:text-[#E8DCC8] rounded-full text-sm font-serif font-semibold border border-gold/30">
+          {inquiries.length} {inquiries.length === 1 ? 'question' : 'questions'}
         </span>
       </div>
 
-      <ul className="space-y-3">
+      <ul className="space-y-4">
         {inquiries.map((inquiry, index) => (
-          <li key={index}>
+          <li key={index} className="animate-gentle-fade" style={{ animationDelay: `${index * 60}ms` }}>
             <button
               onClick={() => onQuestionClick?.(inquiry)}
-              className="w-full flex items-start gap-4 p-5 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg transition-all duration-300 animate-slide-up text-left group"
-              style={{ animationDelay: `${index * 50}ms` }}
+              className="w-full flex items-start gap-5 p-6 rounded-lg bg-cream/80 dark:bg-ink/30 backdrop-blur-sm border-l-4 border-burgundy/40 dark:border-[#C85A6E]/40 hover:border-burgundy dark:hover:border-[#C85A6E] hover:shadow-xl transition-all duration-300 text-left group relative overflow-hidden"
             >
-              <span className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-600 to-emerald-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md group-hover:scale-110 transition-transform">
+              {/* Decorative corner */}
+              <div className="absolute top-2 right-2 text-gold/20 dark:text-gold/30 group-hover:text-gold/40 transition-colors">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M0 0 L16 0 L16 16 Z" />
+                </svg>
+              </div>
+
+              <span className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-burgundy to-burgundy-deep text-cream rounded-full flex items-center justify-center text-base font-serif font-bold shadow-md group-hover:scale-110 transition-transform border-2 border-gold/40">
                 {index + 1}
               </span>
-              <span className="flex-1 text-gray-700 dark:text-gray-200 pt-1 font-medium group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+              <span className="flex-1 font-body text-lg text-ink dark:text-[#E8DCC8] leading-relaxed pt-1.5 group-hover:text-burgundy dark:group-hover:text-[#C85A6E] transition-colors">
                 {inquiry}
               </span>
             </button>

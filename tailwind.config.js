@@ -7,18 +7,46 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      colors: {
+        parchment: {
+          DEFAULT: '#F4ECD8',
+          dark: '#EBE3D5',
+        },
+        burgundy: {
+          DEFAULT: '#8B2E3F',
+          deep: '#6B2737',
+        },
+        forest: {
+          DEFAULT: '#2C5F2D',
+          deep: '#1F4722',
+        },
+        gold: {
+          DEFAULT: '#D4A574',
+          rich: '#C9975B',
+        },
+        ink: {
+          DEFAULT: '#3E2723',
+          light: '#5D4037',
+        },
+        cream: '#FFFBF5',
+      },
+      fontFamily: {
+        'serif': ['Crimson Pro', 'Georgia', 'serif'],
+        'body': ['Spectral', 'Georgia', 'serif'],
+        'decorative': ['Cormorant Garamond', 'Georgia', 'serif'],
+      },
       animation: {
-        'float': 'float 3s ease-in-out infinite',
-        'gradient': 'gradient 3s ease infinite',
-        'fade-in': 'fadeIn 0.5s ease-out',
-        'slide-up': 'slideUp 0.5s ease-out',
-        'slide-in-right': 'slideInRight 0.3s ease-out',
+        'float': 'float 4s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.6s ease-out',
+        'slide-up': 'slideUp 0.6s ease-out',
+        'slide-in-right': 'slideInRight 0.4s ease-out',
         'shake': 'shake 0.5s ease-in-out',
+        'gentle-fade': 'gentleFadeIn 0.4s ease-out',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '50%': { transform: 'translateY(-12px)' },
         },
         gradient: {
           '0%, 100%': { backgroundPosition: '0% 50%' },

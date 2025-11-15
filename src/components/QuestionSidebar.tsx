@@ -16,45 +16,47 @@ export function QuestionSidebar({
   onClose
 }: QuestionSidebarProps) {
   return (
-    <div className="h-full flex flex-col bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl border-r border-gray-200 dark:border-gray-700">
+    <div className="h-full flex flex-col bg-parchment-dark/80 dark:bg-ink/30 backdrop-blur-xl border-r-2 border-gold/30">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-6 border-b-2 border-gold/30 bg-parchment/50 dark:bg-ink/40">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Questions</h2>
+          <h2 className="text-xl font-serif font-bold text-burgundy dark:text-[#C85A6E]">Questions</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+            className="p-2 rounded-lg hover:bg-gold/20 transition-colors group"
             aria-label="Close sidebar"
           >
-            <ArrowLeft size={20} weight="bold" className="text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+            <ArrowLeft size={20} weight="bold" className="text-burgundy dark:text-[#C85A6E] group-hover:text-burgundy-deep dark:group-hover:text-[#C85A6E]" />
           </button>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          About: <span className="font-semibold text-gray-900 dark:text-white">{topic}</span>
+        <p className="text-sm font-body italic text-ink-light dark:text-[#E8DCC8]/70">
+          On: <span className="font-semibold text-ink dark:text-[#E8DCC8]">{topic}</span>
         </p>
       </div>
 
       {/* Questions List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {questions.map((question, index) => (
           <button
             key={index}
             onClick={() => onSelectQuestion(question)}
-            className={`w-full text-left p-4 rounded-xl transition-all duration-200 ${
+            className={`w-full text-left p-4 rounded-lg transition-all duration-300 ${
               question === selectedQuestion
-                ? 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white shadow-lg'
-                : 'bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 text-gray-900 dark:text-white'
+                ? 'bg-gradient-to-r from-burgundy to-burgundy-deep text-cream shadow-lg border-2 border-gold/40'
+                : 'bg-cream/60 dark:bg-ink/30 border-2 border-burgundy/20 dark:border-[#C85A6E]/20 hover:border-burgundy/40 dark:hover:border-[#C85A6E]/40 text-ink dark:text-[#E8DCC8] hover:shadow-md'
             }`}
           >
             <div className="flex items-start gap-3">
-              <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+              <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-serif font-bold ${
                 question === selectedQuestion
-                  ? 'bg-white/20 text-white'
-                  : 'bg-gradient-to-br from-blue-600 to-emerald-600 text-white'
+                  ? 'bg-cream/20 text-gold border border-gold/30'
+                  : 'bg-gradient-to-br from-burgundy to-burgundy-deep text-cream border border-gold/30'
               }`}>
                 {index + 1}
               </span>
-              <span className="flex-1 text-sm font-medium leading-snug pt-0.5">
+              <span className={`flex-1 text-sm font-body leading-snug pt-0.5 ${
+                question === selectedQuestion ? 'font-medium' : ''
+              }`}>
                 {question}
               </span>
             </div>
