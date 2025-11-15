@@ -1,9 +1,10 @@
 interface InquiryListProps {
   topic: string
   inquiries: string[]
+  onQuestionClick?: (question: string) => void
 }
 
-export function InquiryList({ topic, inquiries }: InquiryListProps) {
+export function InquiryList({ topic, inquiries, onQuestionClick }: InquiryListProps) {
   return (
     <div className="space-y-4 animate-fade-in">
       <div className="flex items-center justify-between mb-6">
@@ -17,17 +18,19 @@ export function InquiryList({ topic, inquiries }: InquiryListProps) {
 
       <ul className="space-y-3">
         {inquiries.map((inquiry, index) => (
-          <li
-            key={index}
-            className="flex items-start gap-4 p-5 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg transition-all duration-300 animate-slide-up"
-            style={{ animationDelay: `${index * 50}ms` }}
-          >
-            <span className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-600 to-emerald-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md">
-              {index + 1}
-            </span>
-            <span className="flex-1 text-gray-700 dark:text-gray-200 pt-1 font-medium">
-              {inquiry}
-            </span>
+          <li key={index}>
+            <button
+              onClick={() => onQuestionClick?.(inquiry)}
+              className="w-full flex items-start gap-4 p-5 rounded-2xl bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg transition-all duration-300 animate-slide-up text-left group"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <span className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-600 to-emerald-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md group-hover:scale-110 transition-transform">
+                {index + 1}
+              </span>
+              <span className="flex-1 text-gray-700 dark:text-gray-200 pt-1 font-medium group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                {inquiry}
+              </span>
+            </button>
           </li>
         ))}
       </ul>
