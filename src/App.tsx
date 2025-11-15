@@ -1,12 +1,24 @@
 import { useState } from 'react'
-import { MagnifyingGlass, Sparkle } from '@phosphor-icons/react'
+import { ClockCounterClockwise } from '@phosphor-icons/react'
 import Anthropic from '@anthropic-ai/sdk'
+import { Header } from './components/Header.tsx'
+import { SearchForm } from './components/SearchForm.tsx'
+import { InquiryList } from './components/InquiryList.tsx'
+import { InquiryHistory } from './components/InquiryHistory.tsx'
+import { LoadingState } from './components/LoadingState.tsx'
+import { ErrorMessage } from './components/ErrorMessage.tsx'
+import { useDarkMode } from './hooks/useDarkMode.ts'
+import { useLocalStorage } from './hooks/useLocalStorage.ts'
+import type { Inquiry } from './types/index.ts'
 
 function App() {
   const [topic, setTopic] = useState('')
   const [inquiries, setInquiries] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [darkMode, setDarkMode] = useDarkMode()
+  const [history, setHistory] = useLocalStorage<Inquiry[]>('inquiryHistory', [])
+  const [showHistory, setShowHistory] = useState(false)
 
   const generateInquiries = async () => {
     if (!topic.trim()) return
@@ -67,6 +79,17 @@ Topic: ${topic}`
         .map(line => line.substring(1).trim())
 
       setInquiries(inquiryList)
+
+      // Save to history
+      if (inquiryList.length > 0) {
+        const newInquiry: Inquiry = {
+          id: Date.now().toString(),
+          topic,
+          questions: inquiryList,
+          timestamp: Date.now()
+        }
+        setHistory([newInquiry, ...history].slice(0, 50)) // Keep last 50
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
       console.error('Error generating inquiries:', err)
@@ -80,80 +103,75 @@ Topic: ${topic}`
     generateInquiries()
   }
 
+  const handleSelectInquiry = (inquiry: Inquiry) => {
+    setTopic(inquiry.topic)
+    setInquiries(inquiry.questions)
+    setError(null)
+  }
+
+  const handleClearHistory = () => {
+    if (confirm('Are you sure you want to clear all history?')) {
+      setHistory([])
+    }
+  }
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode)
+  }
+
+  const hasResults = inquiries.length > 0 || loading
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-12 max-w-3xl">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-4">
-            <Sparkle size={32} weight="fill" className="text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-emerald-50/30 to-cyan-50 dark:from-gray-900 dark:via-blue-950/50 dark:to-emerald-950/30 transition-colors duration-500">
+      <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-4xl">
+        <Header darkMode={darkMode} onToggleDarkMode={toggleDarkMode} minimized={hasResults} />
+
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-10 mb-8 border border-gray-200/50 dark:border-gray-700/50 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-emerald-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:via-emerald-500/10 dark:to-cyan-500/10 pointer-events-none" />
+
+          <div className="relative z-10">
+            <SearchForm
+              topic={topic}
+              loading={loading}
+              onTopicChange={setTopic}
+              onSubmit={handleSubmit}
+            />
+
+            {error && <ErrorMessage message={error} />}
+
+            {loading && <LoadingState />}
+
+            {!loading && inquiries.length > 0 && (
+              <InquiryList topic={topic} inquiries={inquiries} />
+            )}
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">InquiryBot</h1>
-          <p className="text-gray-600">Your Aristocratic Tutor for Intellectual Exploration</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <form onSubmit={handleSubmit} className="mb-6">
-            <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-2">
-              What topic would you like to explore?
-            </label>
-            <div className="flex gap-3">
-              <input
-                id="topic"
-                type="text"
-                value={topic}
-                onChange={(e) => setTopic(e.target.value)}
-                placeholder="e.g., quantum computing, ancient Rome, climate change..."
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                disabled={loading}
-              />
-              <button
-                type="submit"
-                disabled={loading || !topic.trim()}
-                className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition flex items-center gap-2"
-              >
-                <MagnifyingGlass size={20} weight="bold" />
-                {loading ? 'Thinking...' : 'Explore'}
-              </button>
-            </div>
-          </form>
+        {/* History Button */}
+        {history.length > 0 && (
+          <button
+            onClick={() => setShowHistory(true)}
+            className="fixed bottom-6 right-6 p-4 bg-gradient-to-br from-blue-600 to-emerald-600 text-white rounded-full shadow-2xl hover:shadow-blue-500/50 hover:scale-110 transition-all duration-300 group z-30"
+            aria-label="View history"
+          >
+            <ClockCounterClockwise size={24} weight="bold" className="group-hover:rotate-12 transition-transform duration-300" />
+            <span className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-cyan-500 to-emerald-500 text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg">
+              {history.length > 9 ? '9+' : history.length}
+            </span>
+          </button>
+        )}
 
-          {error && (
-            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 mb-6">
-              {error}
-            </div>
-          )}
+        <InquiryHistory
+          history={history}
+          isOpen={showHistory}
+          onClose={() => setShowHistory(false)}
+          onSelectInquiry={handleSelectInquiry}
+          onClearHistory={handleClearHistory}
+        />
 
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-            </div>
-          )}
-
-          {!loading && inquiries.length > 0 && (
-            <div className="space-y-3">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Intriguing Inquiries about "{topic}"
-              </h2>
-              <ul className="space-y-2">
-                {inquiries.map((inquiry, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition"
-                  >
-                    <span className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-sm font-medium">
-                      {index + 1}
-                    </span>
-                    <span className="text-gray-700 pt-0.5">{inquiry}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-        <div className="text-center text-sm text-gray-500">
+        <footer className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
           <p>Powered by Claude 3.5 Sonnet</p>
-        </div>
+        </footer>
       </div>
     </div>
   )
