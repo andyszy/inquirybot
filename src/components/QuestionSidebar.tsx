@@ -16,21 +16,21 @@ export function QuestionSidebar({
   onClose
 }: QuestionSidebarProps) {
   return (
-    <div className="h-full flex flex-col bg-parchment-dark/80 dark:bg-ink/30 backdrop-blur-xl border-r-2 border-gold/30">
+    <div className="h-full flex flex-col bg-ivory-dark/80 dark:bg-charcoal/30 backdrop-blur-xl border-r-2 border-champagne/30">
       {/* Header */}
-      <div className="p-6 border-b-2 border-gold/30 bg-parchment/50 dark:bg-ink/40">
+      <div className="p-6 border-b-2 border-champagne/30 bg-ivory/50 dark:bg-charcoal/40">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-serif font-bold text-burgundy dark:text-[#C85A6E]">Questions</h2>
+          <h2 className="text-xl font-serif font-bold text-navy dark:text-[#5B89B3]">Questions</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gold/20 transition-colors group"
+            className="p-2 rounded-lg hover:bg-champagne/20 transition-colors group"
             aria-label="Close sidebar"
           >
-            <ArrowLeft size={20} weight="bold" className="text-burgundy dark:text-[#C85A6E] group-hover:text-burgundy-deep dark:group-hover:text-[#C85A6E]" />
+            <ArrowLeft size={20} weight="bold" className="text-navy dark:text-[#5B89B3] group-hover:text-navy-deep dark:group-hover:text-[#5B89B3]" />
           </button>
         </div>
-        <p className="text-sm font-body italic text-ink-light dark:text-[#E8DCC8]/70">
-          On: <span className="font-semibold text-ink dark:text-[#E8DCC8]">{topic}</span>
+        <p className="text-sm font-body italic text-charcoal-light dark:text-[#E8E6E0]/70">
+          On: <span className="font-semibold text-charcoal dark:text-[#E8E6E0]">{topic}</span>
         </p>
       </div>
 
@@ -42,15 +42,15 @@ export function QuestionSidebar({
             onClick={() => onSelectQuestion(question)}
             className={`w-full text-left p-4 rounded-lg transition-all duration-300 ${
               question === selectedQuestion
-                ? 'bg-gradient-to-r from-burgundy to-burgundy-deep text-cream shadow-lg border-2 border-gold/40'
-                : 'bg-cream/60 dark:bg-ink/30 border-2 border-burgundy/20 dark:border-[#C85A6E]/20 hover:border-burgundy/40 dark:hover:border-[#C85A6E]/40 text-ink dark:text-[#E8DCC8] hover:shadow-md'
+                ? 'bg-gradient-to-r from-navy to-navy-deep text-pearl shadow-lg border-2 border-champagne/40'
+                : 'bg-pearl/60 dark:bg-charcoal/30 border-2 border-navy/20 dark:border-[#5B89B3]/20 hover:border-navy/40 dark:hover:border-[#5B89B3]/40 text-charcoal dark:text-[#E8E6E0] hover:shadow-md'
             }`}
           >
             <div className="flex items-start gap-3">
               <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-serif font-bold ${
                 question === selectedQuestion
-                  ? 'bg-cream/20 text-gold border border-gold/30'
-                  : 'bg-gradient-to-br from-burgundy to-burgundy-deep text-cream border border-gold/30'
+                  ? 'bg-pearl/20 text-champagne border border-champagne/30'
+                  : 'bg-gradient-to-br from-navy to-navy-deep text-pearl border border-champagne/30'
               }`}>
                 {index + 1}
               </span>

@@ -1,29 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Spectral:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Scholarly color palette */
-  --parchment: #F4ECD8;
-  --parchment-dark: #EBE3D5;
-  --burgundy: #8B2E3F;
-  --burgundy-deep: #6B2737;
-  --forest: #2C5F2D;
-  --forest-deep: #1F4722;
-  --gold: #D4A574;
-  --gold-rich: #C9975B;
-  --ink: #3E2723;
-  --ink-light: #5D4037;
-  --cream: #FFFBF5;
+  /* Refined Literary Luxury Palette */
+  --ivory: #FAF8F3;
+  --ivory-dark: #F5F3ED;
+  --navy: #1B3A52;
+  --navy-deep: #0F2537;
+  --emerald: #1E5A46;
+  --emerald-deep: #144032;
+  --champagne: #D4AF37;
+  --champagne-rich: #B8941F;
+  --charcoal: #2B2B2B;
+  --charcoal-light: #3F3F3F;
+  --pearl: #FFFEFB;
 
-  /* Dark mode scholarly palette */
-  --night-parchment: #2C2416;
-  --night-ink: #E8DCC8;
-  --night-burgundy: #C85A6E;
-  --night-forest: #5FA662;
-  --night-gold: #E6C495;
+  /* Dark mode elegant palette */
+  --night-ivory: #1A1A1A;
+  --night-text: #E8E6E0;
+  --night-navy: #5B89B3;
+  --night-emerald: #4A9D7B;
+  --night-champagne: #E6C76E;
 }
 
 * {
@@ -34,27 +34,29 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: 'Spectral', 'Georgia', serif;
+  font-family: 'Lora', 'Georgia', serif;
   transition: background-color 0.5s ease;
-  background-color: var(--parchment);
-  color: var(--ink);
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body.dark {
-  background-color: var(--night-parchment);
-  color: var(--night-ink);
+  background-color: var(--night-ivory);
+  color: var(--night-text);
 }
 
-/* Headings use Crimson Pro */
+/* Headings use Playfair Display */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Crimson Pro', 'Georgia', serif;
+  font-family: 'Playfair Display', 'Georgia', serif;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 /* Special decorative text */
 .decorative {
-  font-family: 'Cormorant Garamond', 'Georgia', serif;
+  font-family: 'Playfair Display', 'Georgia', serif;
   font-style: italic;
 }
 
@@ -67,10 +69,10 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Paper texture background */
+/* Subtle linen texture background */
 .paper-texture {
   background-image:
-    url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
 }
 
 /* Ornamental divider */
@@ -83,49 +85,49 @@ html {
 .ornament::before,
 .ornament::after {
   content: '◆';
-  color: var(--gold);
+  color: var(--champagne);
   font-size: 0.5rem;
-  opacity: 0.6;
+  opacity: 0.5;
   padding: 0 1rem;
 }
 
 /* Drop cap style */
 .drop-cap::first-letter {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Playfair Display', serif;
   font-size: 3.5em;
   line-height: 0.8;
   float: left;
   margin: 0.1em 0.1em 0 0;
-  color: var(--burgundy);
+  color: var(--navy);
   font-weight: 700;
 }
 
-/* Custom scrollbar - scholarly style */
+/* Custom scrollbar - refined style */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--parchment-dark);
+  background: var(--ivory-dark);
 }
 
 body.dark ::-webkit-scrollbar-track {
-  background: var(--night-parchment);
+  background: var(--night-ivory);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gold);
-  border-radius: 6px;
-  border: 2px solid var(--parchment-dark);
+  background: var(--champagne);
+  border-radius: 5px;
+  border: 2px solid var(--ivory-dark);
 }
 
 body.dark ::-webkit-scrollbar-thumb {
-  background: var(--night-gold);
-  border-color: var(--night-parchment);
+  background: var(--night-champagne);
+  border-color: var(--night-ivory);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gold-rich);
+  background: var(--champagne-rich);
 }
 
 /* Gentle fade in */
@@ -138,4 +140,40 @@ body.dark ::-webkit-scrollbar-thumb {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Luxury shine effect for gold accents */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--champagne) 0%,
+    var(--champagne-rich) 25%,
+    #f4e4b7 50%,
+    var(--champagne-rich) 75%,
+    var(--champagne) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Refined shadows */
+.shadow-elegant {
+  box-shadow: 0 4px 20px rgba(27, 58, 82, 0.08), 0 1px 4px rgba(27, 58, 82, 0.05);
+}
+
+.shadow-elegant-lg {
+  box-shadow: 0 10px 40px rgba(27, 58, 82, 0.12), 0 4px 12px rgba(27, 58, 82, 0.08);
+}
+
+.shadow-champagne {
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15), 0 1px 4px rgba(212, 175, 55, 0.1);
 }

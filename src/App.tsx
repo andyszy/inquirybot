@@ -152,7 +152,7 @@ Topic: ${topic}`;
   const isInChatMode = selectedQuestion !== null;
 
   return (
-    <div className="min-h-screen bg-parchment dark:bg-[#2C2416] paper-texture transition-colors duration-500">
+    <div className="min-h-screen bg-ivory dark:bg-[#1A1A1A] paper-texture transition-colors duration-500">
       <div
         className={`${
           isInChatMode
@@ -183,30 +183,30 @@ Topic: ${topic}`;
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 flex flex-col bg-cream/95 dark:bg-ink/20 backdrop-blur-sm relative overflow-hidden border-l-2 border-gold/20">
-              <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-burgundy/5 dark:from-gold/10 dark:to-burgundy/10 pointer-events-none paper-texture" />
+            <div className="flex-1 flex flex-col bg-pearl/95 dark:bg-charcoal/20 backdrop-blur-sm relative overflow-hidden border-l-2 border-champagne/20">
+              <div className="absolute inset-0 bg-gradient-to-br from-champagne/5 to-navy/5 dark:from-champagne/10 dark:to-navy/10 pointer-events-none paper-texture" />
 
               {/* Chat Header */}
-              <div className="relative z-10 p-6 border-b-2 border-gold/30 flex items-center justify-between bg-parchment/50 dark:bg-ink/30">
+              <div className="relative z-10 p-6 border-b-2 border-champagne/30 flex items-center justify-between bg-ivory/50 dark:bg-charcoal/30">
                 <div className="flex items-center gap-4">
                   <button
                     onClick={handleCloseChatMode}
-                    className="md:hidden p-2 rounded hover:bg-gold/20 transition-colors text-burgundy dark:text-[#C85A6E]"
+                    className="md:hidden p-2 rounded hover:bg-champagne/20 transition-colors text-navy dark:text-[#5B89B3]"
                   >
                     <ClockCounterClockwise size={20} weight="bold" />
                   </button>
                   <div>
-                    <h2 className="text-lg font-serif font-bold text-burgundy dark:text-[#C85A6E]">
+                    <h2 className="text-lg font-serif font-bold text-navy dark:text-[#5B89B3]">
                       Exploring
                     </h2>
-                    <p className="text-sm font-body italic text-ink-light dark:text-[#E8DCC8]/70">
+                    <p className="text-sm font-body italic text-charcoal-light dark:text-[#E8E6E0]/70">
                       {selectedQuestion}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={toggleDarkMode}
-                  className="p-2 rounded hover:bg-gold/20 transition-colors text-2xl"
+                  className="p-2 rounded hover:bg-champagne/20 transition-colors text-2xl"
                 >
                   {darkMode ? "☀" : "☾"}
                 </button>
@@ -230,7 +230,7 @@ Topic: ${topic}`;
           </div>
         ) : (
           // Normal Mode Layout
-          <div className="bg-cream/95 dark:bg-ink/20 backdrop-blur-sm rounded-lg shadow-2xl shadow-burgundy/10 p-8 sm:p-12 mb-8 border-2 border-gold/20 dark:border-gold/30 relative overflow-hidden">
+          <div className="bg-pearl/95 dark:bg-charcoal/20 backdrop-blur-sm rounded-lg shadow-2xl shadow-burgundy/10 p-8 sm:p-12 mb-8 border-2 border-champagne/20 dark:border-champagne/30 relative overflow-hidden">
 
             <div className="relative z-10">
               <SearchForm
@@ -259,7 +259,7 @@ Topic: ${topic}`;
         {!isInChatMode && history.length > 0 && (
           <button
             onClick={() => setShowHistory(true)}
-            className="fixed bottom-6 right-6 p-4 bg-burgundy text-cream rounded-full shadow-2xl shadow-burgundy/30 hover:bg-burgundy-deep hover:scale-110 transition-all duration-300 group z-30 border-2 border-gold"
+            className="fixed bottom-6 right-6 p-4 bg-navy text-pearl rounded-full shadow-2xl shadow-burgundy/30 hover:bg-navy-deep hover:scale-110 transition-all duration-300 group z-30 border-2 border-champagne"
             aria-label="View history"
           >
             <ClockCounterClockwise
@@ -267,7 +267,7 @@ Topic: ${topic}`;
               weight="bold"
               className="group-hover:rotate-12 transition-transform duration-300"
             />
-            <span className="absolute -top-2 -right-2 w-6 h-6 bg-forest text-cream text-xs font-serif font-bold rounded-full flex items-center justify-center shadow-lg border border-gold">
+            <span className="absolute -top-2 -right-2 w-6 h-6 bg-emerald text-pearl text-xs font-serif font-bold rounded-full flex items-center justify-center shadow-lg border border-champagne">
               {history.length > 9 ? "9+" : history.length}
             </span>
           </button>
@@ -282,7 +282,7 @@ Topic: ${topic}`;
         />
 
         {!isInChatMode && (
-          <footer className="text-center text-sm text-ink-light/60 dark:text-[#E8DCC8]/50 mt-8 font-decorative italic">
+          <footer className="text-center text-sm text-charcoal-light/60 dark:text-[#E8E6E0]/50 mt-8 font-decorative italic">
             <div className="ornament">Powered by Claude 3.5 Sonnet</div>
           </footer>
         )}

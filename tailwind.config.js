@@ -8,32 +8,33 @@ export default {
   theme: {
     extend: {
       colors: {
-        parchment: {
-          DEFAULT: '#F4ECD8',
-          dark: '#EBE3D5',
+        ivory: {
+          DEFAULT: '#FAF8F3',
+          dark: '#F5F3ED',
         },
-        burgundy: {
-          DEFAULT: '#8B2E3F',
-          deep: '#6B2737',
+        navy: {
+          DEFAULT: '#1B3A52',
+          deep: '#0F2537',
         },
-        forest: {
-          DEFAULT: '#2C5F2D',
-          deep: '#1F4722',
+        emerald: {
+          DEFAULT: '#1E5A46',
+          deep: '#144032',
         },
-        gold: {
-          DEFAULT: '#D4A574',
-          rich: '#C9975B',
+        champagne: {
+          DEFAULT: '#D4AF37',
+          rich: '#B8941F',
         },
-        ink: {
-          DEFAULT: '#3E2723',
-          light: '#5D4037',
+        charcoal: {
+          DEFAULT: '#2B2B2B',
+          light: '#3F3F3F',
         },
-        cream: '#FFFBF5',
+        pearl: '#FFFEFB',
       },
       fontFamily: {
-        'serif': ['Crimson Pro', 'Georgia', 'serif'],
-        'body': ['Spectral', 'Georgia', 'serif'],
-        'decorative': ['Cormorant Garamond', 'Georgia', 'serif'],
+        'serif': ['Playfair Display', 'Georgia', 'serif'],
+        'body': ['Lora', 'Georgia', 'serif'],
+        'decorative': ['Playfair Display', 'Georgia', 'serif'],
+        'sans': ['Montserrat', 'system-ui', 'sans-serif'],
       },
       animation: {
         'float': 'float 4s ease-in-out infinite',
