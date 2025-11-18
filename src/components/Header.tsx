@@ -11,7 +11,7 @@ export function Header({ darkMode, onToggleDarkMode, minimized = false }: Header
     <header className={`text-center relative transition-all duration-700 ${minimized ? 'mb-6' : 'mb-12'}`}>
       <button
         onClick={onToggleDarkMode}
-        className="absolute top-0 right-0 p-3 rounded-full bg-pearl/80 dark:bg-charcoal/60 border-2 border-champagne/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group"
+        className="absolute top-0 right-0 p-3 rounded-full bg-pearl/80 dark:bg-charcoal/60 border-[0.5px] border-champagne/30 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group"
         aria-label="Toggle dark mode"
       >
         {darkMode ? (
@@ -21,7 +21,7 @@ export function Header({ darkMode, onToggleDarkMode, minimized = false }: Header
         )}
       </button>
 
-      <div className={`inline-flex items-center justify-center bg-gradient-to-br from-navy to-navy-deep rounded-full shadow-2xl shadow-navy/40 transition-all duration-700 border-4 border-champagne/40 ${minimized ? 'w-14 h-14 mb-3' : 'w-24 h-24 mb-8'}`}>
+      <div className={`inline-flex items-center justify-center bg-gradient-to-br from-navy to-navy-deep rounded-full shadow-2xl shadow-navy/40 transition-all duration-700 border-[0.5px] border-champagne/40 ${minimized ? 'w-14 h-14 mb-3' : 'w-24 h-24 mb-8'}`}>
         <Coffee size={minimized ? 28 : 48} weight="fill" className="text-champagne transition-all duration-700" />
       </div>
 

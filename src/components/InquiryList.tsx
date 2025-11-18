@@ -12,7 +12,7 @@ export function InquiryList({ topic, inquiries, onQuestionClick }: InquiryListPr
           Inquiries on{' '}
           <span className="font-bold not-italic">{topic}</span>
         </h2>
-        <span className="px-4 py-2 bg-gradient-to-r from-champagne/20 to-emerald/20 dark:from-champagne/30 dark:to-emerald/30 text-charcoal dark:text-[#E8E6E0] rounded-full text-sm font-serif font-semibold border border-champagne/30">
+        <span className="px-4 py-2 bg-champagne/20 dark:bg-champagne/30 text-charcoal dark:text-[#E8E6E0] rounded-full text-sm font-serif font-semibold border-[0.5px] border-champagne/30">
           {inquiries.length} {inquiries.length === 1 ? 'question' : 'questions'}
         </span>
       </div>
@@ -24,14 +24,7 @@ export function InquiryList({ topic, inquiries, onQuestionClick }: InquiryListPr
               onClick={() => onQuestionClick?.(inquiry)}
               className="w-full flex items-start gap-5 p-6 rounded-lg bg-pearl/80 dark:bg-charcoal/30 backdrop-blur-sm border-l-4 border-navy/40 dark:border-[#5B89B3]/40 hover:border-navy dark:hover:border-[#5B89B3] hover:shadow-xl transition-all duration-300 text-left group relative overflow-hidden"
             >
-              {/* Decorative corner */}
-              <div className="absolute top-2 right-2 text-champagne/20 dark:text-champagne/30 group-hover:text-champagne/40 transition-colors">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                  <path d="M0 0 L16 0 L16 16 Z" />
-                </svg>
-              </div>
-
-              <span className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-navy to-navy-deep text-pearl rounded-full flex items-center justify-center text-base font-serif font-bold shadow-md group-hover:scale-110 transition-transform border-2 border-champagne/40">
+              <span className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-navy to-navy-deep text-pearl rounded-full flex items-center justify-center text-base font-serif font-bold shadow-md group-hover:scale-110 transition-transform border-[0.5px] border-champagne/40">
                 {index + 1}
               </span>
               <span className="flex-1 font-body text-lg text-charcoal dark:text-[#E8E6E0] leading-relaxed pt-1.5 group-hover:text-navy dark:group-hover:text-[#5B89B3] transition-colors">

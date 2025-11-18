@@ -36,7 +36,7 @@ export function Chat({ messages, isLoading, onSendMessage }: ChatProps) {
       <div className="flex-1 overflow-y-auto p-6 space-y-8">
         {messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center py-16 px-4">
-            <div className="w-20 h-20 bg-gradient-to-br from-navy to-navy-deep rounded-full flex items-center justify-center mb-6 animate-float border-4 border-champagne/30 shadow-lg">
+            <div className="w-20 h-20 bg-gradient-to-br from-navy to-navy-deep rounded-full flex items-center justify-center mb-6 animate-float border-[0.5px] border-champagne/30 shadow-lg">
               <GraduationCap size={36} weight="fill" className="text-champagne" />
             </div>
             <h3 className="text-2xl font-decorative italic text-navy dark:text-[#5B89B3] mb-3">
@@ -54,7 +54,7 @@ export function Chat({ messages, isLoading, onSendMessage }: ChatProps) {
                 className={`flex gap-4 ${message.role === 'user' ? 'justify-end' : 'justify-start'} animate-gentle-fade`}
               >
                 {message.role === 'assistant' && (
-                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-navy to-navy-deep rounded-full flex items-center justify-center border-2 border-champagne/40 shadow-md">
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-navy to-navy-deep rounded-full flex items-center justify-center border-[0.5px] border-champagne/40 shadow-md">
                     <GraduationCap size={22} weight="fill" className="text-champagne" />
                   </div>
                 )}
@@ -62,24 +62,20 @@ export function Chat({ messages, isLoading, onSendMessage }: ChatProps) {
                 <div
                   className={`max-w-[75%] rounded-xl px-6 py-5 relative ${
                     message.role === 'user'
-                      ? 'bg-gradient-to-br from-emerald to-emerald-deep text-pearl border-2 border-champagne/30 shadow-lg'
-                      : 'bg-ivory-dark/60 dark:bg-charcoal/40 backdrop-blur-sm border-2 border-navy/20 dark:border-[#5B89B3]/20 text-charcoal dark:text-[#E8E6E0] shadow-md'
+                      ? 'bg-gradient-to-br from-emerald to-emerald-deep text-pearl border-[0.5px] border-champagne/30 shadow-lg'
+                      : 'bg-ivory-dark/60 dark:bg-charcoal/40 backdrop-blur-sm border-[0.5px] border-navy/20 dark:border-[#5B89B3]/20 text-charcoal dark:text-[#E8E6E0] shadow-md'
                   }`}
                 >
-                  {/* Decorative corner for assistant messages */}
-                  {message.role === 'assistant' && (
-                    <div className="absolute -top-2 -left-2 text-navy/30 dark:text-[#5B89B3]/30">
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M0 0 Q10 0 10 10 Q10 0 20 0 L0 0 Z" />
-                      </svg>
-                    </div>
-                  )}
-
                   {message.role === 'user' ? (
                     <p className="font-body text-base leading-relaxed">{message.content}</p>
                   ) : (
                     <div className="prose prose-sm prose-navy dark:prose-invert max-w-none font-body">
-                      <ReactMarkdown
+                      {message.isStreaming && !message.content && (
+                        <div className="py-2">
+                          <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-navy dark:border-[#5B89B3] border-t-transparent"></div>
+                        </div>
+                      )}
+                      {message.content && <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
                           p: ({ children }) => <p className="mb-4 last:mb-0 leading-relaxed text-base">{children}</p>,
@@ -114,7 +110,10 @@ export function Chat({ messages, isLoading, onSendMessage }: ChatProps) {
                         }}
                       >
                         {message.content}
-                      </ReactMarkdown>
+                      </ReactMarkdown>}
+                      {message.isStreaming && message.content && (
+                        <span className="inline-block w-2 h-4 bg-navy dark:bg-[#5B89B3] animate-pulse ml-1"></span>
+                      )}
                     </div>
                   )}
                   <span className={`text-xs mt-3 block font-serif ${
@@ -128,24 +127,20 @@ export function Chat({ messages, isLoading, onSendMessage }: ChatProps) {
                 </div>
 
                 {message.role === 'user' && (
-                  <div className="flex-shrink-0 w-12 h-12 bg-charcoal-light dark:bg-[#E8E6E0]/20 rounded-full flex items-center justify-center border-2 border-champagne/30 shadow-md">
+                  <div className="flex-shrink-0 w-12 h-12 bg-charcoal-light dark:bg-[#E8E6E0]/20 rounded-full flex items-center justify-center border-[0.5px] border-champagne/30 shadow-md">
                     <User size={22} weight="fill" className="text-champagne" />
                   </div>
                 )}
               </div>
             ))}
 
-            {isLoading && (
+            {isLoading && messages.length > 0 && !messages[messages.length - 1]?.content && !messages[messages.length - 1]?.isStreaming && (
               <div className="flex gap-4 justify-start animate-gentle-fade">
-                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-navy to-navy-deep rounded-full flex items-center justify-center border-2 border-champagne/40 shadow-md">
+                <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-navy to-navy-deep rounded-full flex items-center justify-center border-[0.5px] border-champagne/40 shadow-md">
                   <GraduationCap size={22} weight="fill" className="text-champagne" />
                 </div>
-                <div className="bg-ivory-dark/60 dark:bg-charcoal/40 backdrop-blur-sm border-2 border-navy/20 dark:border-[#5B89B3]/20 rounded-xl px-6 py-5 shadow-md">
-                  <div className="flex gap-2">
-                    <div className="w-2 h-2 bg-navy dark:bg-[#5B89B3] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 bg-emerald dark:bg-[#4A9D7B] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2 h-2 bg-champagne dark:bg-[#E6C76E] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                  </div>
+                <div className="bg-ivory-dark/60 dark:bg-charcoal/40 backdrop-blur-sm border-[0.5px] border-navy/20 dark:border-[#5B89B3]/20 rounded-xl px-6 py-5 shadow-md">
+                  <div className="inline-block animate-spin rounded-full h-6 w-6 border-2 border-navy dark:border-[#5B89B3] border-t-transparent"></div>
                 </div>
               </div>
             )}
@@ -155,7 +150,7 @@ export function Chat({ messages, isLoading, onSendMessage }: ChatProps) {
       </div>
 
       {/* Input Area */}
-      <div className="border-t-2 border-champagne/30 p-6 bg-ivory/40 dark:bg-charcoal/20 backdrop-blur-sm">
+      <div className="border-t-[0.5px] border-champagne/30 p-6 bg-ivory/40 dark:bg-charcoal/20 backdrop-blur-sm">
         <form onSubmit={handleSubmit} className="flex gap-3">
           <input
             type="text"
@@ -163,12 +158,12 @@ export function Chat({ messages, isLoading, onSendMessage }: ChatProps) {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Share your thoughts…"
             disabled={isLoading}
-            className="flex-1 px-5 py-4 border-2 border-champagne/40 dark:border-champagne/50 rounded-lg focus:ring-4 focus:ring-navy/20 focus:border-navy dark:focus:border-[#5B89B3] outline-none transition-all duration-300 bg-pearl/80 dark:bg-charcoal/30 font-body text-charcoal dark:text-[#E8E6E0] placeholder-charcoal-light/40 dark:placeholder-[#E8E6E0]/30 shadow-inner"
+            className="flex-1 px-5 py-4 border-[0.5px] border-champagne/40 dark:border-champagne/50 rounded-lg focus:ring-4 focus:ring-navy/20 focus:border-navy dark:focus:border-[#5B89B3] outline-none transition-all duration-300 bg-pearl/80 dark:bg-charcoal/30 font-body text-charcoal dark:text-[#E8E6E0] placeholder-charcoal-light/40 dark:placeholder-[#E8E6E0]/30 shadow-inner"
           />
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="px-6 py-4 bg-gradient-to-r from-navy to-navy-deep hover:from-navy-deep hover:to-navy text-pearl rounded-lg font-serif font-semibold disabled:bg-charcoal-light/30 dark:disabled:bg-charcoal-light/20 disabled:cursor-not-allowed transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border-2 border-champagne/30"
+            className="px-6 py-4 bg-gradient-to-r from-navy to-navy-deep hover:from-navy-deep hover:to-navy text-pearl rounded-lg font-serif font-semibold disabled:bg-charcoal-light/30 dark:disabled:bg-charcoal-light/20 disabled:cursor-not-allowed transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 border-[0.5px] border-champagne/30"
           >
             <PaperPlaneRight size={20} weight="fill" />
           </button>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import Anthropic from '@anthropic-ai/sdk'
 
 export interface Message {
@@ -6,15 +6,106 @@ export interface Message {
   role: 'user' | 'assistant'
   content: string
   timestamp: number
+  isStreaming?: boolean
 }
 
-export function useChat() {
-  const [messages, setMessages] = useState<Message[]>([])
+interface UseChatOptions {
+  sessionId?: string
+  topic?: string
+  questions?: string[]
+  selectedQuestion?: string
+  onSessionCreated?: (sessionId: string) => void
+}
+
+export function useChat(options: UseChatOptions = {}) {
+  const [messages, setMessages] = useState<Message[]>(options.sessionId ? [] : [])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(options.sessionId)
+  const [streamingMessageId, setStreamingMessageId] = useState<string | null>(null)
+  
+  // Use ref for callbacks to avoid dependency cycles
+  const optionsRef = useRef(options)
+  const abortControllerRef = useRef<AbortController | null>(null)
+  
+  // Update ref when options change
+  useEffect(() => {
+    optionsRef.current = options
+  }, [options.topic, options.questions, options.selectedQuestion, options.onSessionCreated])
+
+  const saveSession = useCallback(async (sessionId: string | undefined, newMessages: Message[]) => {
+    const currentOptions = optionsRef.current
+    if (!currentOptions.topic || !currentOptions.questions || !currentOptions.selectedQuestion) return
+
+    try {
+      console.log('Saving session...', { sessionId, messageCount: newMessages.length })
+      
+      // Try relative path first (standard), but fallback to localhost:3000 if that fails (for dev resilience)
+      let url = '/api/chat/save';
+      let response;
+      
+      try {
+        response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: sessionId,
+            topic: currentOptions.topic,
+            questions: currentOptions.questions,
+            selectedQuestion: currentOptions.selectedQuestion,
+            messages: newMessages,
+          }),
+        });
+      } catch (e) {
+        // If relative path failed (network error) and we are on localhost, try explicit port 3000
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          console.warn('Relative API path failed, retrying with http://localhost:3000...');
+          url = 'http://localhost:3000/api/chat/save';
+          response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: sessionId,
+              topic: currentOptions.topic,
+              questions: currentOptions.questions,
+              selectedQuestion: currentOptions.selectedQuestion,
+              messages: newMessages,
+            }),
+          });
+        } else {
+          throw e;
+        }
+      }
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('API Error:', response.status, errorText)
+        throw new Error(`Failed to save session: ${response.status} ${errorText}`)
+      }
+
+      const data = await response.json()
+      console.log('Session saved:', data)
+      
+      if (!sessionId && data.id) {
+        setCurrentSessionId(data.id)
+        if (currentOptions.onSessionCreated) {
+          console.log('Calling onSessionCreated with:', data.id)
+          currentOptions.onSessionCreated(data.id)
+        }
+      }
+    } catch (err) {
+      console.error('Error saving session:', err)
+      // Don't show error to user for save failures, but log it
+    }
+  }, []) // No dependencies needed thanks to ref
 
   const sendMessage = async (content: string, selectedQuestion?: string) => {
     if (!content.trim() && !selectedQuestion) return
+
+    // Cancel any ongoing streaming
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -23,9 +114,24 @@ export function useChat() {
       timestamp: Date.now()
     }
 
-    setMessages(prev => [...prev, userMessage])
+    const updatedMessages = [...messages, userMessage]
+    setMessages(updatedMessages)
     setIsLoading(true)
     setError(null)
+
+    // Create a new assistant message that will be populated as we stream
+    const assistantMessageId = (Date.now() + 1).toString()
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: 'assistant',
+      content: '',
+      timestamp: Date.now(),
+      isStreaming: true
+    }
+
+    // Add the empty assistant message to the UI
+    setMessages([...updatedMessages, assistantMessage])
+    setStreamingMessageId(assistantMessageId)
 
     try {
       const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
@@ -105,44 +211,90 @@ Remember: The best learning happens when students surprise themselves with their
         content: selectedQuestion || content
       })
 
-      const response = await client.messages.create({
+      // Create abort controller for this request
+      abortControllerRef.current = new AbortController()
+
+      // Use streaming API
+      const stream = await client.messages.stream({
         model: 'claude-sonnet-4-5',
         max_tokens: 2048,
         system: systemPrompt,
         messages: apiMessages as any
       })
 
-      const assistantContent = response.content
-        .filter(block => block.type === 'text')
-        .map(block => 'text' in block ? block.text : '')
-        .join('')
+      let fullContent = ''
 
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: assistantContent,
-        timestamp: Date.now()
+      // Handle streaming events
+      for await (const event of stream) {
+        if (event.type === 'content_block_delta') {
+          if (event.delta.type === 'text_delta') {
+            fullContent += event.delta.text
+            
+            // Update the streaming message
+            setMessages(prevMessages => 
+              prevMessages.map(msg => 
+                msg.id === assistantMessageId
+                  ? { ...msg, content: fullContent }
+                  : msg
+              )
+            )
+          }
+        }
       }
 
-      setMessages(prev => [...prev, assistantMessage])
+      // Mark streaming as complete
+      setStreamingMessageId(null)
+      
+      // Update messages with final non-streaming state
+      setMessages(prevMessages =>
+        prevMessages.map(msg =>
+          msg.id === assistantMessageId
+            ? { ...msg, isStreaming: false }
+            : msg
+        )
+      )
+
+      // Build final messages array for saving
+      const finalMessages = [...updatedMessages, {
+        ...assistantMessage,
+        content: fullContent,
+        isStreaming: false
+      }]
+
+      // Auto-save session after receiving complete assistant response
+      await saveSession(currentSessionId, finalMessages)
     } catch (err) {
+      // Remove the streaming message if there was an error
+      setMessages(prevMessages => 
+        prevMessages.filter(msg => msg.id !== assistantMessageId)
+      )
+      setStreamingMessageId(null)
       setError(err instanceof Error ? err.message : 'An error occurred')
       console.error('Error sending message:', err)
     } finally {
       setIsLoading(false)
+      abortControllerRef.current = null
     }
   }
 
   const clearChat = () => {
     setMessages([])
     setError(null)
+    setCurrentSessionId(undefined)
+  }
+
+  const loadMessages = (loadedMessages: Message[]) => {
+    setMessages(loadedMessages)
   }
 
   return {
     messages,
     isLoading,
     error,
+    sessionId: currentSessionId,
+    streamingMessageId,
     sendMessage,
-    clearChat
+    clearChat,
+    loadMessages
   }
 }

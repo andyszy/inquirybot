@@ -16,9 +16,9 @@ export function QuestionSidebar({
   onClose
 }: QuestionSidebarProps) {
   return (
-    <div className="h-full flex flex-col bg-ivory-dark/80 dark:bg-charcoal/30 backdrop-blur-xl border-r-2 border-champagne/30">
+    <div className="h-full flex flex-col bg-ivory-dark/80 dark:bg-charcoal/30 backdrop-blur-xl border-r-[0.5px] border-champagne/30">
       {/* Header */}
-      <div className="p-6 border-b-2 border-champagne/30 bg-ivory/50 dark:bg-charcoal/40">
+      <div className="p-6 border-b-[0.5px] border-champagne/30 bg-ivory/50 dark:bg-charcoal/40">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-serif font-bold text-navy dark:text-[#5B89B3]">Questions</h2>
           <button
@@ -42,15 +42,15 @@ export function QuestionSidebar({
             onClick={() => onSelectQuestion(question)}
             className={`w-full text-left p-4 rounded-lg transition-all duration-300 ${
               question === selectedQuestion
-                ? 'bg-gradient-to-r from-navy to-navy-deep text-pearl shadow-lg border-2 border-champagne/40'
-                : 'bg-pearl/60 dark:bg-charcoal/30 border-2 border-navy/20 dark:border-[#5B89B3]/20 hover:border-navy/40 dark:hover:border-[#5B89B3]/40 text-charcoal dark:text-[#E8E6E0] hover:shadow-md'
+                ? 'bg-gradient-to-r from-navy to-navy-deep text-pearl shadow-lg border-[0.5px] border-champagne/40'
+                : 'bg-pearl/60 dark:bg-charcoal/30 border-[0.5px] border-navy/20 dark:border-[#5B89B3]/20 hover:border-navy/40 dark:hover:border-[#5B89B3]/40 text-charcoal dark:text-[#E8E6E0] hover:shadow-md'
             }`}
           >
             <div className="flex items-start gap-3">
               <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-serif font-bold ${
                 question === selectedQuestion
-                  ? 'bg-pearl/20 text-champagne border border-champagne/30'
-                  : 'bg-gradient-to-br from-navy to-navy-deep text-pearl border border-champagne/30'
+                  ? 'bg-pearl/20 text-champagne border-[0.5px] border-champagne/30'
+                  : 'bg-gradient-to-br from-navy to-navy-deep text-pearl border-[0.5px] border-champagne/30'
               }`}>
                 {index + 1}
               </span>

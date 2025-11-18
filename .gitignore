@@ -14,6 +14,10 @@ dist-ssr
 
 # Environment variables
 .env
+.env.local
+.env*.local
+.env.vercel
+*.backup
 
 # Editor directories and files
 .vscode/*
@@ -26,3 +30,6 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+/src/generated/prisma
+.env*.local
